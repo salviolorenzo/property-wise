@@ -20,32 +20,31 @@ export class SearchService {
     maxBudget = Infinity,
     downPaymentPercentage = 0.05,
   ) {
-    const forSaleListings = await this.realtyInUsService.getPropertiesByType(
+    const forSaleListing = await this.realtyInUsService.getPropertiesByType(
       {
         postal_code: zip,
       },
       'for_sale',
     );
 
-    const listingsInBudget = forSaleListings.filter(
-      (listing) => listing.price <= maxBudget,
+    const listingsInBudget = forSaleListing.filter(
+      (listing) => listing.listPrice <= maxBudget,
     );
 
     const output = [];
     const outliers = [];
 
     for (const listing of listingsInBudget) {
-      const { averageRent, rentEstimate, marketData, comps } =
-        await this.getRentalData(listing);
+      const { averageRent, comps } = await this.getRentalData(listing);
 
       const monthlyPaymentData = getMonthlyPaymentData(
-        listing.price,
-        listing.price * downPaymentPercentage,
+        listing.listPrice,
+        listing.listPrice * downPaymentPercentage,
       );
 
       const listingData = {
         listing,
-        rentalMarketData: { averageRent, rentEstimate, marketData, comps },
+        rentalMarketData: { averageRent, comps },
         monthlyPaymentData,
       };
 
@@ -63,27 +62,26 @@ export class SearchService {
 
   async getRentalData(listingToCompare) {
     const {
-      formattedAddress,
-      propertyType,
-      zipCode,
-      bedrooms,
-      bathrooms,
-      squareFootage,
+      propertyId,
+      description: { beds, baths, sqft },
     } = listingToCompare;
 
     const rentalListingsInTheArea =
-      await this.realtyInUsService.getPropertiesByType({ zipCode }, 'for_rent');
+      await this.realtyInUsService.getSimilarHomes(propertyId, 'for_rent', 100);
 
     const filteredForRentListings = rentalListingsInTheArea
       .filter(
         (listing) =>
-          listing.bedrooms === bedrooms &&
-          listing.bathrooms === bathrooms &&
-          listing.squareFootage <= squareFootage + 300,
+          listing.description.beds === beds &&
+          listing.description.baths === baths &&
+          listing.description.sqft <= sqft + 300,
       )
       .map((listing) => {
-        const { bedrooms, bathrooms, squareFootage, price } = listing;
-        return { bedrooms, bathrooms, squareFootage, price };
+        const {
+          description: { beds, baths, sqft },
+          listPrice,
+        } = listing;
+        return { beds, baths, sqft, listPrice };
       });
 
     const averageRent = getAveragePrice(filteredForRentListings);

@@ -142,3 +142,10 @@ export interface ListingSearchResponse {
     };
   };
 }
+
+export interface ListingSearchResults {
+  __typename: string;
+  count: number;
+  total: number;
+  results: Listing[];
+}

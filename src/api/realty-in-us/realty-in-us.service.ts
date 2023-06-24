@@ -6,7 +6,12 @@ import { firstValueFrom } from 'rxjs';
 import { PropertyType, TransportationType } from './types';
 import { camelToSnakeCase } from 'src/lib/utils/string.util';
 import { CamelCasedPropertiesDeep } from 'type-fest';
-import { ListingSearchResponse } from './interfaces/listing-response';
+import {
+  Listing,
+  ListingSearchResponse,
+  ListingSearchResults,
+} from './interfaces/listing-response';
+import { recursiveToCamel } from 'src/lib/utils/object.util';
 
 @Injectable()
 export class RealtyInUSService {
@@ -49,7 +54,10 @@ export class RealtyInUSService {
     return options;
   }
 
-  async getPropertiesByType(body, type: PropertyType) {
+  async getPropertiesByType(
+    body,
+    type: PropertyType,
+  ): Promise<CamelCasedPropertiesDeep<Listing[]>> {
     const endpoint = 'properties/v3/list';
     const headers = { 'content-type': 'application/json' };
 
@@ -68,11 +76,12 @@ export class RealtyInUSService {
     );
 
     try {
-      const response: CamelCasedPropertiesDeep<ListingSearchResponse> =
-        await firstValueFrom(
-          this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
-        );
-      return response.data.homeSearch;
+      const response = await firstValueFrom(
+        this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
+      );
+      return recursiveToCamel(
+        response.data.home_search.results,
+      ) as CamelCasedPropertiesDeep<Listing>[];
     } catch (error) {
       console.error(error);
     }
@@ -82,7 +91,7 @@ export class RealtyInUSService {
     propertyId: string,
     propertyType: PropertyType,
     limit = 10,
-  ) {
+  ): Promise<CamelCasedPropertiesDeep<Listing[]>> {
     const endpoint = '/properties/v3/list-similar-homes';
     const params = {
       property_id: propertyId,
@@ -93,11 +102,12 @@ export class RealtyInUSService {
     const requestConfig = this.getRequestConfig('GET', endpoint, params);
 
     try {
-      const response: CamelCasedPropertiesDeep<ListingSearchResponse> =
-        await firstValueFrom(
-          this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
-        );
-      return response.data;
+      const response = await firstValueFrom(
+        this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
+      );
+      return recursiveToCamel(
+        response.data.home_search.results,
+      ) as CamelCasedPropertiesDeep<Listing>[];
     } catch (error) {
       console.error(error);
     }
@@ -113,7 +123,7 @@ export class RealtyInUSService {
       const response = await firstValueFrom(
         this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
       );
-      return response.data;
+      return recursiveToCamel(response.data.home);
     } catch (error) {
       console.error(error);
     }
@@ -129,7 +139,7 @@ export class RealtyInUSService {
       const response = await firstValueFrom(
         this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
       );
-      return response.data;
+      return recursiveToCamel(response.data.home_search);
     } catch (error) {
       console.error(error);
     }
@@ -154,7 +164,7 @@ export class RealtyInUSService {
       const response = await firstValueFrom(
         this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
       );
-      return response.data;
+      return recursiveToCamel(response.data.home);
     } catch (error) {
       console.error(error);
     }
@@ -170,7 +180,7 @@ export class RealtyInUSService {
       const response = await firstValueFrom(
         this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
       );
-      return response.data;
+      return recursiveToCamel(response.data.home);
     } catch (error) {
       console.error(error);
     }

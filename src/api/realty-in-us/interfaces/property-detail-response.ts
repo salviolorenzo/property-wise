@@ -78,57 +78,57 @@ export interface PropertyDetail {
         rate: 0.07195;
       },
       {
-        __typename: 'Rate';
+        __typename: string;
         loan_type: {
-          __typename: 'LoanType';
+          __typename: string;
           loan_id: 'twenty_year_fix';
         };
         rate: 0.07091;
       },
       {
-        __typename: 'Rate';
+        __typename: string;
         loan_type: {
-          __typename: 'LoanType';
+          __typename: string;
           loan_id: 'fifteen_year_fix';
         };
         rate: 0.06395;
       },
       {
-        __typename: 'Rate';
+        __typename: string;
         loan_type: {
-          __typename: 'LoanType';
+          __typename: string;
           loan_id: 'ten_year_fix';
         };
         rate: 0.06338;
       },
       {
-        __typename: 'Rate';
+        __typename: string;
         loan_type: {
-          __typename: 'LoanType';
+          __typename: string;
           loan_id: 'thirty_year_fha';
         };
         rate: 0.06913;
       },
       {
-        __typename: 'Rate';
+        __typename: string;
         loan_type: {
-          __typename: 'LoanType';
+          __typename: string;
           loan_id: 'thirty_year_va';
         };
         rate: 0.06889;
       },
       {
-        __typename: 'Rate';
+        __typename: string;
         loan_type: {
-          __typename: 'LoanType';
+          __typename: string;
           loan_id: 'five_one_arm';
         };
         rate: 0.06696;
       },
       {
-        __typename: 'Rate';
+        __typename: string;
         loan_type: {
-          __typename: 'LoanType';
+          __typename: string;
           loan_id: 'seven_one_arm';
         };
         rate: 0.06746;

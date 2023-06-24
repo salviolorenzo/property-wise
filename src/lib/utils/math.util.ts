@@ -36,7 +36,7 @@ const getMonthlyPaymentData = (
 };
 
 function getAveragePrice(listings) {
-  const prices = listings.map((listing) => listing.price);
+  const prices = listings.map((listing) => listing.listPrice);
   const sum = prices.reduce(function (accumulator, currentValue) {
     return accumulator + currentValue;
   }, 0);
