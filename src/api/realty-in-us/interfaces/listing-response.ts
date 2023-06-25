@@ -1,14 +1,15 @@
+import { CamelCasedPropertiesDeep } from 'type-fest';
 import { PropertyType } from '../types';
 
-export interface ListingBranding {
+export type ListingBranding = {
   __typename: string;
   photo: any;
   name: any;
   phone: string | null;
   link: string | null;
-}
+};
 
-export interface ListingLocation {
+export type ListingLocation = {
   __typename: string;
   address: {
     __typename: string;
@@ -33,9 +34,9 @@ export interface ListingLocation {
     __typename: string;
     fips_code: string;
   };
-}
+};
 
-export interface ListingDescription {
+export type ListingDescription = {
   __typename: string;
   sub_type: string;
   type: string;
@@ -53,9 +54,9 @@ export interface ListingDescription {
   baths_max: string | null;
   baths_full_calc: string | null;
   baths_partial_calc: string | null;
-}
+};
 
-export interface ListingAdvertiser {
+export type ListingAdvertiser = {
   __typename: string;
   fulfillment_id: string;
   name: string;
@@ -63,9 +64,9 @@ export interface ListingAdvertiser {
   href: any;
   slogan: any;
   type: string;
-}
+};
 
-export interface ListingFlag {
+export type ListingFlag = {
   __typename: string;
   is_price_reduced: boolean | string | null;
   is_new_construction: boolean | string | null;
@@ -75,18 +76,18 @@ export interface ListingFlag {
   is_coming_soon: boolean | string | null;
   is_contingent: boolean | string | null;
   is_pending: boolean | string | null;
-}
+};
 
-export interface ListingAgent {
+export type ListingAgent = {
   __typename: string;
   id: string | null;
   agent_id: string | null;
   agent_name: string | null;
   office_id: string | null;
   office_name: string | null;
-}
+};
 
-export interface ListingSource {
+export type ListingSource = {
   __typename: string;
   agents: ListingAgent[];
   id: string;
@@ -95,9 +96,9 @@ export interface ListingSource {
   plan_id: string | null;
   listing_href: string | null;
   listing_id: string;
-}
+};
 
-export interface Listing {
+export type Listing = {
   __typename: string;
   property_id: string;
   listing_id: string;
@@ -130,9 +131,9 @@ export interface Listing {
   list_date: string;
   products: object;
   last_sold_price: number;
-}
+};
 
-export interface ListingSearchResponse {
+export type ListingSearchResponse = {
   data: {
     home_search: {
       __typename: string;
@@ -141,11 +142,26 @@ export interface ListingSearchResponse {
       results: Listing[];
     };
   };
-}
+};
 
-export interface ListingSearchResults {
+export type ListingSearchResults = {
   __typename: string;
   count: number;
   total: number;
   results: Listing[];
-}
+};
+
+export type MappedListing = CamelCasedPropertiesDeep<Listing>;
+export type MappedListingSearchResponse =
+  CamelCasedPropertiesDeep<ListingSearchResponse>;
+export type MappedListingSearchResults =
+  CamelCasedPropertiesDeep<ListingSearchResults>;
+export type MappedListingBranding = CamelCasedPropertiesDeep<ListingBranding>;
+export type MappedListingLocation = CamelCasedPropertiesDeep<ListingLocation>;
+export type MappedListingDescription =
+  CamelCasedPropertiesDeep<ListingDescription>;
+export type MappedListingAdvertiser =
+  CamelCasedPropertiesDeep<ListingAdvertiser>;
+export type MappedListingFlag = CamelCasedPropertiesDeep<ListingFlag>;
+export type MappedListingAgent = CamelCasedPropertiesDeep<ListingAgent>;
+export type MappedListingSource = CamelCasedPropertiesDeep<ListingSource>;

@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { PropertyType, TransportationType } from './types';
 import { camelToSnakeCase } from 'src/lib/utils/string.util';
@@ -9,9 +9,13 @@ import { CamelCasedPropertiesDeep } from 'type-fest';
 import {
   Listing,
   ListingSearchResponse,
-  ListingSearchResults,
+  MappedListing,
 } from './interfaces/listing-response';
 import { recursiveToCamel } from 'src/lib/utils/object.util';
+import {
+  PropertyDetail,
+  PropertyDetailResponse,
+} from './interfaces/property-detail-response';
 
 @Injectable()
 export class RealtyInUSService {
@@ -57,7 +61,7 @@ export class RealtyInUSService {
   async getPropertiesByType(
     body,
     type: PropertyType,
-  ): Promise<CamelCasedPropertiesDeep<Listing[]>> {
+  ): Promise<MappedListing[]> {
     const endpoint = 'properties/v3/list';
     const headers = { 'content-type': 'application/json' };
 
@@ -76,12 +80,13 @@ export class RealtyInUSService {
     );
 
     try {
-      const response = await firstValueFrom(
-        this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
-      );
+      const response: AxiosResponse<ListingSearchResponse> =
+        await firstValueFrom(
+          this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
+        );
       return recursiveToCamel(
-        response.data.home_search.results,
-      ) as CamelCasedPropertiesDeep<Listing>[];
+        response.data.data.home_search.results,
+      ) as MappedListing[];
     } catch (error) {
       console.error(error);
     }
@@ -102,28 +107,35 @@ export class RealtyInUSService {
     const requestConfig = this.getRequestConfig('GET', endpoint, params);
 
     try {
-      const response = await firstValueFrom(
-        this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
-      );
+      const response: AxiosResponse<ListingSearchResponse> =
+        await firstValueFrom(
+          this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
+        );
       return recursiveToCamel(
-        response.data.home_search.results,
-      ) as CamelCasedPropertiesDeep<Listing>[];
+        response.data.data.home_search.results,
+      ) as MappedListing[];
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getPropertyDetails(propertyId: string, listingId?: string) {
+  async getPropertyDetails(
+    propertyId: string,
+    listingId?: string,
+  ): Promise<PropertyDetail> {
     const endpoint = 'properties/v3/detail';
     const params = { property_id: propertyId, listing_id: listingId };
 
     const requestConfig = this.getRequestConfig('GET', endpoint, params);
 
     try {
-      const response = await firstValueFrom(
-        this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
-      );
-      return recursiveToCamel(response.data.home);
+      const response: AxiosResponse<PropertyDetailResponse> =
+        await firstValueFrom(
+          this.httpService.post(`${this.baseUrl}/${endpoint}`, requestConfig),
+        );
+      return recursiveToCamel(
+        response.data.data.home,
+      ) as Promise<PropertyDetail>;
     } catch (error) {
       console.error(error);
     }
