@@ -19,6 +19,7 @@ export type PropertyImages = {
 export type PropertyImage = {
   __typename: string;
   href: string;
+  type?: string;
   tags: { __typename: string; label: string; probability: number }[];
 };
 
